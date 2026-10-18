@@ -1,0 +1,79 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Carousel API (Development + Telegram mock)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-carousel-api",
+      "program": "${workspaceFolder}/src/Carousel.Api/bin/Debug/net9.0/Carousel.Api.dll",
+      "cwd": "${workspaceFolder}/src/Carousel.Api",
+      "args": [],
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://127.0.0.1:5050",
+        "Telegram__UseMock": "true",
+        "Telegram__BotToken": "",
+        "Telegram__MiniAppUrl": "http://localhost:5173",
+        "Cors__AllowedOrigins__0": "http://localhost:5173"
+      },
+      "logging": {
+        "moduleLogging": {
+          "kind": "messages"
+        }
+      }
+    },
+    {
+      "name": "Carousel API (live bot token)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-carousel-api",
+      "program": "${workspaceFolder}/src/Carousel.Api/bin/Debug/net9.0/Carousel.Api.dll",
+      "cwd": "${workspaceFolder}/src/Carousel.Api",
+      "args": [],
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://127.0.0.1:5050",
+        "Telegram__UseMock": "false",
+        "Telegram__BotToken": "${input:botToken}",
+        "Telegram__MiniAppUrl": "http://localhost:5173",
+        "Cors__AllowedOrigins__0": "http://localhost:5173"
+      }
+    },
+    {
+      "name": "Mini App (Vite)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/src/frontends/mini-app",
+      "port": 5173,
+      "env": {
+        "VITE_API_BASE_URL": "http://localhost:5050"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "API + Mini App (mock Telegram)",
+      "configurations": [
+        "Carousel API (Development + Telegram mock)",
+        "Mini App (Vite)"
+      ],
+      "stopAll": true,
+      "preLaunchTask": ""
+    }
+  ],
+  "inputs": [
+    {
+      "id": "botToken",
+      "type": "promptString",
+      "description": "Telegram Bot Token (from @BotFather)",
+      "password": true
+    }
+  ]
+}

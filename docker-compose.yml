@@ -1,0 +1,68 @@
+services:
+  # Container stack: docker compose --profile full up -d --build
+  # Dev workflow (postgres only): docker compose up -d
+  api:
+    build:
+      context: .
+      target: api
+    container_name: carousel-api
+    profiles: ["full"]
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_URLS: http://+:8080
+      # In-container DB host is the service name, not localhost.
+      ConnectionStrings__Carousel: Host=postgres;Port=5432;Database=carousel;Username=carousel;Password=${POSTGRES_PASSWORD:-carousel}
+      Auth__Jwt__SigningKey: ${Auth__Jwt__SigningKey:-}
+      Telegram__BotToken: ${Telegram__BotToken:-}
+      Telegram__UseMock: ${Telegram__UseMock:-false}
+      # Fresh DB needs migrations; override to false and run `dotnet ef database update` as a job if preferred.
+      # Правило AGENTS: в Production авто-миграции всегда отключены — включение только по команде.
+      Database__AutoMigrate: "false"
+      Cors__AllowedOrigins__0: ${CORS_ORIGIN:-http://localhost:8081}
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      # Serilog files + DataProtection keys survive container recreation.
+      - ./logs:/app/logs
+      - ./keys:/app/keys
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      target: web
+      args:
+        # URL the browser uses to reach the API — same origin, nginx proxies /api.
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8081}
+    container_name: carousel-web
+    profiles: ["full"]
+    ports:
+      - "127.0.0.1:8081:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: carousel-postgres
+    environment:
+      POSTGRES_USER: carousel
+      # H6: override via .env or environment; default is dev-only
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-carousel}
+      POSTGRES_DB: carousel
+    ports:
+      # H6: bind localhost only — do not expose DB to all interfaces
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - carousel-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carousel -d carousel"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  carousel-postgres-data:

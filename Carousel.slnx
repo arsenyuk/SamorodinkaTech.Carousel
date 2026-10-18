@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Carousel.Api/Carousel.Api.csproj" />
+    <Project Path="src/Carousel.Application/Carousel.Application.csproj" />
+    <Project Path="src/Carousel.Domain/Carousel.Domain.csproj" />
+    <Project Path="src/Carousel.Infrastructure/Carousel.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Carousel.Application.Tests/Carousel.Application.Tests.csproj" />
+    <Project Path="tests/Carousel.Domain.Tests/Carousel.Domain.Tests.csproj" />
+    <Project Path="tests/Carousel.Integration.Tests/Carousel.Integration.Tests.csproj" />
+  </Folder>
+</Solution>

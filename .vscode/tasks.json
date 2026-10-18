@@ -1,0 +1,138 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-carousel-api",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/Carousel.Api/Carousel.Api.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "build-carousel-sln",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/Carousel.slnx",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test-carousel",
+      "command": "dotnet",
+      "type": "process",
+      "args": ["test", "${workspaceFolder}/Carousel.slnx"],
+      "problemMatcher": "$msCompile",
+      "group": "test"
+    },
+    {
+      "label": "npm-install-mini-app",
+      "type": "shell",
+      "command": "npm",
+      "args": ["install"],
+      "options": {
+        "cwd": "${workspaceFolder}/src/frontends/mini-app"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Open Mini App in browser",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/open-miniapp.sh",
+      "args": ["--wait"],
+      "windows": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/open-miniapp.sh", "--wait"]
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Open Mini App (no wait)",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/open-miniapp.sh",
+      "args": [],
+      "windows": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/open-miniapp.sh"]
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "close": true
+      }
+    },
+    {
+      "label": "Start API (mock, :5050)",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/dev-api.sh",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Start Mini App (Vite :5173)",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/dev-miniapp.sh",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Open Swagger in browser",
+      "type": "shell",
+      "command": "open",
+      "args": ["http://localhost:5050/swagger/index.html"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "close": true
+      }
+    },
+    {
+      "label": "Open Mock outbox in browser",
+      "type": "shell",
+      "command": "open",
+      "args": ["http://localhost:5050/api/dev/telegram/outbox"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "close": true
+      }
+    },
+    {
+      "label": "Docker: build + archive (carousel-images.tar)",
+      "type": "shell",
+      "command": "docker compose --profile full build && docker save samorodinkatechcarousel-api samorodinkatechcarousel-web -o carousel-images.tar && ls -lh carousel-images.tar",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

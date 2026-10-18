@@ -1,0 +1,23 @@
+# Build artifacts
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/.vite/
+
+# Local state (persisted via volumes, not image)
+logs/
+keys/
+.env
+
+# VCS / tooling
+.git/
+.mimocode/
+.output/
+output/
+.playwright-cli/
+
+# Not needed inside the image build context
+docs/
+tests/
+scripts/
